@@ -1,0 +1,208 @@
+class driver1 #(parameter pck_sz=40, drvs=16);
+    virtual device #(.pck_sz(pck_sz))vdc; //Interface virtual driver-dut (debe coincidir con el if del ambiente)
+    agent_drv_mbx a_d_mbx1; 
+    event drv_done;
+    int wait_;
+    int mode;
+    transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans;
+    
+    task run();
+        $display("[%g] El driver 1 fué inicializado",$time);
+        @(posedge vdc.clk);
+        vdc.rst=1;
+        @(posedge vdc.clk);
+        transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans; //creo el placeholder para la transaccion
+        //idea para inicializar
+        vdc.
+        $display("[%g] el driver espera por una transacción",$time);
+        wait_=0; //sincroniza el driver con el dut
+        @(posedge vdc.clk); //Espera a que llegue un mensaje desde el mbx
+        a_d_mbx1.get(trans);
+        trans.print("Se recibió una transaccion en el driver 1");
+        $display("Transacciones pendientes en el mbx a_d_mbx1=%g",a_d_mbx1.num_transacciones());
+
+        while(wait_ < trans.ret)begin
+            @(posedge vdc.clk);
+            wait_=wait_+1;
+            vdc.dato = trans.dato;
+        end
+        if(trans.sender==01 and 0<trans.receptor<drvs) //está enviando un paquete
+            write: begin
+                vdc.push=1;  //hay un push?
+                trans.time=$time;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transacción ejecutada");
+                
+            end
+        if(trans.receptor==01 and 0<trans.sender<drvs) //está recibiendo un paquete
+            read: begin
+                trans.dato=vdc.dato_out;
+                trans.tiempo=$time;
+                @(posedge vdc.clk);
+                vdc.pop=1;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transaccion ejecutada"); 
+        else //debugueo del ambiente
+            $display("Un error de ambiente, id de dispositivo de envio/llegada no coincide",$time);
+            $finish;
+        @(drv_done);
+        @(posedge vdc.clk);
+    endtask
+endclass
+
+class driver2 #(parameter pck_sz=40, drvs=16);
+    virtual device #(.pck_sz(pck_sz))vdc; //Interface virtual driver-dut (debe coincidir con el if del ambiente)
+    agent_drv_mbx a_d_mbx2; 
+    event drv_done;
+    int wait_;
+    int mode;
+    transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans;
+    
+    task run();
+        $display("[%g] El driver 2 fué inicializado",$time);
+        @(posedge vdc.clk);
+        vdc.rst=1;
+        @(posedge vdc.clk);
+        transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans; //creo el placeholder para la transaccion
+        //idea para inicializar
+        vdc.
+        $display("[%g] el driver espera por una transacción",$time);
+        wait_=0; //sincroniza el driver con el dut
+        @(posedge vdc.clk); //Espera a que llegue un mensaje desde el mbx
+        a_d_mbx2.get(trans);
+        trans.print("Se recibió una transaccion en el driver 2");
+        $display("Transacciones pendientes en el mbx a_d_mbx2=%g",a_d_mbx2.num_transacciones());
+
+        while(wait_ < trans.ret)begin
+            @(posedge vdc.clk);
+            wait_=wait_+1;
+            vdc.dato = trans.dato;
+        end
+        if(trans.sender==02 and 0<trans.receptor<drvs) //está enviando un paquete
+            write: begin
+                vdc.push=1;  //hay un push?
+                trans.time=$time;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transacción ejecutada");
+                
+            end
+        if(trans.receptor==02 and 0<trans.sender<drvs) //está recibiendo un paquete
+            read: begin
+                trans.dato=vdc.dato_out;
+                trans.tiempo=$time;
+                @(posedge vdc.clk);
+                vdc.pop=1;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transaccion ejecutada"); 
+        else //debugueo del ambiente
+            $display("Un error de ambiente, id de dispositivo de envio/llegada no coincide",$time);
+            $finish;
+        @(drv_done);
+        @(posedge vdc.clk);
+    endtask
+endclass
+
+
+class driver1 #(parameter pck_sz=40, drvs=16);
+    virtual device #(.pck_sz(pck_sz))vdc; //Interface virtual driver-dut (debe coincidir con el if del ambiente)
+    agent_drv_mbx a_d_mbx3; 
+    event drv_done;
+    int wait_;
+    int mode;
+    transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans;
+    
+    task run();
+        $display("[%g] El driver 3 fué inicializado",$time);
+        @(posedge vdc.clk);
+        vdc.rst=1;
+        @(posedge vdc.clk);
+        transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans; //creo el placeholder para la transaccion
+        //idea para inicializar
+        vdc.
+        $display("[%g] el driver espera por una transacción",$time);
+        wait_=0; //sincroniza el driver con el dut
+        @(posedge vdc.clk); //Espera a que llegue un mensaje desde el mbx
+        a_d_mbx3.get(trans);
+        trans.print("Se recibió una transaccion en el driver 3");
+        $display("Transacciones pendientes en el mbx a_d_mbx3=%g",a_d_mbx3.num_transacciones());
+
+        while(wait_ < trans.ret)begin
+            @(posedge vdc.clk);
+            wait_=wait_+1;
+            vdc.dato = trans.dato;
+        end
+        if(trans.sender==03 and 0<trans.receptor<drvs) //está enviando un paquete
+            write: begin
+                vdc.push=1;  //hay un push?
+                trans.time=$time;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transacción ejecutada");
+                
+            end
+        if(trans.receptor==03 and 0<trans.sender<drvs) //está recibiendo un paquete
+            read: begin
+                trans.dato=vdc.dato_out;
+                trans.tiempo=$time;
+                @(posedge vdc.clk);
+                vdc.pop=1;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transaccion ejecutada"); 
+        else //debugueo del ambiente
+            $display("Un error de ambiente, id de dispositivo de envio/llegada no coincide",$time);
+            $finish;
+        @(drv_done);
+        @(posedge vdc.clk);
+    endtask
+endclass
+
+class driver1 #(parameter pck_sz=40, drvs=16);
+    virtual device #(.pck_sz(pck_sz))vdc; //Interface virtual driver-dut (debe coincidir con el if del ambiente)
+    agent_drv_mbx a_d_mbx4; 
+    event drv_done;
+    int wait_;
+    int mode;
+    transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans;
+    
+    task run();
+        $display("[%g] El driver 4 fué inicializado",$time);
+        @(posedge vdc.clk);
+        vdc.rst=1;
+        @(posedge vdc.clk);
+        transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans; //creo el placeholder para la transaccion
+        //idea para inicializar
+        vdc.
+        $display("[%g] el driver espera por una transacción",$time);
+        wait_=0; //sincroniza el driver con el dut
+        @(posedge vdc.clk); //Espera a que llegue un mensaje desde el mbx
+        a_d_mbx4.get(trans);
+        trans.print("Se recibió una transaccion en el driver 4");
+        $display("Transacciones pendientes en el mbx a_d_mbx4=%g",a_d_mbx4.num_transacciones());
+
+        while(wait_ < trans.ret)begin
+            @(posedge vdc.clk);
+            wait_=wait_+1;
+            vdc.dato = trans.dato;
+        end
+        if(trans.sender==04 and 0<trans.receptor<drvs) //está enviando un paquete
+            write: begin
+                vdc.push=1;  //hay un push?
+                trans.time=$time;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transacción ejecutada");
+                
+            end
+        if(trans.receptor==04 and 0<trans.sender<drvs) //está recibiendo un paquete
+            read: begin
+                trans.dato=vdc.dato_out;
+                trans.tiempo=$time;
+                @(posedge vdc.clk);
+                vdc.pop=1;
+                //drv_chkr_mbx.put(trans); Si lo hacemos driver/monitor
+                trans.print("Driver: Transaccion ejecutada"); 
+        else //debugueo del ambiente
+            $display("Un error de ambiente, id de dispositivo de envio/llegada no coincide",$time);
+            $finish;
+        @(drv_done);
+        @(posedge vdc.clk);
+    endtask
+endclass
