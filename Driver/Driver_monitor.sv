@@ -13,8 +13,7 @@ class driver #(parameter pck_sz=40, drvs=16, id_drv);
         vdc.rst=1;
         @(posedge vdc.clk);
         transaccion #(.pck_sz(pck_sz),.drvs(drvs)) trans; 
-        //idea para inicializar
-        vdc.
+        vdc.dato=pck_sz´bx;
         $display("[%g] el driver espera por una transacción",$time);
         wait_=0; 
         @(posedge vdc.clk); 
@@ -30,6 +29,7 @@ class driver #(parameter pck_sz=40, drvs=16, id_drv);
             0: begin //envío
                 vdc.push=1;  
                 trans.time=$time;
+                trans.mode=1;
                 drv_chkr_mbx.put(trans);
                 trans.print("Driver: Transacción ejecutada",$time);
         case(trans.mode)
