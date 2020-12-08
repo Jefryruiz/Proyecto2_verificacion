@@ -17,6 +17,7 @@ class check#(parameter pck_sz=41);
   drv_chkr_mbx m_c_mbx14;//                                                      //
   drv_chkr_mbx m_c_mbx15;//                                                      //
   drv_chkr_mbx m_c_mbx16;//                                                      //
+  drv_chkr_mbx c_c_mbx;  //mailbox interno del mismo checker ***
   int transacciones_completadas=0;//cuentan las transacciones que llegan//
   int retardo;//Evalua el retardo de las transacciones que llegan del score y los drv_mon
   transaccion trans;//transacciones instancia
@@ -25,140 +26,38 @@ class check#(parameter pck_sz=41);
   transaccion m[$];//       cola que almacenan transacciones que vienen de drv_mon //
   transaccion auxiliar_mon;//variable auxiliar de transaccion del drv_mon
   event completado;//  indica que las transacciones que vienen del drv_mon han llegado  //
-  
+  int drvs=16; // numero total de drivers
   
  task verificacion();
-    forever begin
-      
-      if(m_c_mbx1.num()>0)//la transaccion viene del driver 1 al monitor 1//
-        m_c_mbx1.get(trans);
-        $display("llega desde el monitor 1");
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-    end
-      if(m_c_mbx2.num()>0)begin//la transaccion viene del driver 2 al monitor 2//
-        $display("llega desde el monitor 2");
-        m_c_mbx2.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx3.num()>0)begin//la transaccion viene del driver 3 al monitor 3//
-        $display("llega desde el monitor 3");
-        m_c_mbx3.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx4.num()>0)begin//la transaccion viene del driver 4 al monitor 4//
-        $display("llega desde el monitor 4");
-        m_c_mbx4.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx5.num()>0)begin//la transaccion viene del driver 5 al monitor 5//
-        $display("llega desde el monitor 5");
-        m_c_mbx5.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx6.num()>0)begin//la transaccion viene del driver 6 al monitor 6//
-        $display("llega desde el monitor 6");
-        m_c_mbx6.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx7.num()>0)begin//la transaccion viene del driver 7 al monitor 7//
-        $display("llega desde el monitor 7");
-        m_c_mbx7.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx8.num()>0)begin//la transaccion viene del driver 8 al monitor 8//
-        $display("llega desde el monitor 8");
-        m_c_mbx8.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx9.num()>0)begin//la transaccion viene del driver 9 al monitor 9//
-        $display("llega desde el monitor 9");
-        m_c_mbx9.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx10.num()>0)begin//la transaccion viene del driver 10 al monitor 10//
-       $display("llega desde el monitor 10");
-        m_c_mbx10.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx11.num()>0)begin//la transaccion viene del driver 11 al monitor 11//
-        $display("llega desde el monitor 11");
-        m_c_mbx11.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx12.num()>0)begin//la transaccion viene del driver 12 al monitor 12//
-        $display("llega desde el monitor 12");
-        m_c_mbx12.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx13.num()>0)begin//la transaccion viene del driver 13 al monitor 13//
-        $display("llega desde el monitor 13");
-        m_c_mbx13.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx14.num()>0)begin
-        $display("llega desde el monitor 14");
-        m_c_mbx14.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx15.num()>0)begin//la transaccion viene del driver 14 al monitor 14//
-        $display("llega desde el monitor 15");
-        m_c_mbx15.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      if(m_c_mbx16.num()>0)begin//la transaccion viene del driver 15 al monitor 15//
-        $display("llega desde el monitor 16");
-        m_c_mbx16.get(trans);
-        trans.tiempo_recibido=$time;
-        trans.completado=1;
-        m.push_back(trans);
-        transacciones_completadas++;
-      end
-      
+    forever begin       //cambio sobre lectura de los mbxs
+      for(int i=0;i<drvs;i++) begin
+       case(i)
+         0: c_c_mbx = m_c_mbx1;
+         1: c_c_mbx = m_c_mbx2;
+         2: c_c_mbx = m_c_mbx3;
+         3: c_c_mbx = m_c_mbx4;
+         4: c_c_mbx = m_c_mbx5;
+         5: c_c_mbx = m_c_mbx6;
+         6: c_c_mbx = m_c_mbx7;
+         7: c_c_mbx = m_c_mbx8;
+         8: c_c_mbx = m_c_mbx9;
+         9: c_c_mbx = m_c_mbx10;
+         10: c_c_mbx = m_c_mbx11;
+         11: c_c_mbx = m_c_mbx12;
+         12: c_c_mbx = m_c_mbx13;
+         13: c_c_mbx = m_c_mbx14;
+         14: c_c_mbx = m_c_mbx15;
+         15: c_c_mbx = m_c_mbx16;
+       endcase
+       c_c_mbx.get(trans);
+       if(c_c_mbx.num()>0 and trans.sender == i)begin
+         $display("llega desde el monitor=%0d", trans.receptor);
+         trans.tiempo_recibido=$time;
+         trans.completado=1;
+         m.push_back(trans);
+         transacciones_completadas++;
+       end
+     end      
    
       #1->completado;
       
@@ -195,8 +94,6 @@ class check#(parameter pck_sz=41);
       end
     end
   endtask
-  
-  
   
   task run();
     fork
