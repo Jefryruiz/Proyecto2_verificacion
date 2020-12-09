@@ -1,14 +1,14 @@
-class test#(parameter pck_sz=41,drvs=16);
-  test_gen_mbx t_g_mbx;
-  test_score_mbx t_s_mbx;
-  instrucciones_generador instruccion;
-  solicitud_sb inst_sr;
+class test#(parameter pck_sz=41,drvs=16);//test a evaluar
+  test_gen_mbx t_g_mbx;//mailbox con instrucciones que vienen del test al generador_agente
+  test_score_mbx t_s_mbx;//mailbox con instrucciones que vienen del test al scoreboard
+  instrucciones_generador instruccion;//enumerado con instrucciones al generador_agente
+  solicitud_sb inst_sr;//enumerado con instrucciones al scoreboard
   
-  ambiente #(.pck_sz(pck_sz),.drvs(drvs)) ambiente_inst;
+  ambiente #(.pck_sz(pck_sz),.drvs(drvs)) ambiente_inst;//instancia del ambiente
   
-  virtual mesh_gnrt vdc;
+  virtual mesh_gnrt vdc;//interfaz virtual
   
-  function new();
+  function new();//inicializa el ambiente, los mailboxes, los conecta y conecta la interfaz al ambiente
     t_g_mbx=new();
     t_s_mbx=new();
     
@@ -23,9 +23,10 @@ class test#(parameter pck_sz=41,drvs=16);
   task run();
     $display("[%g]Test ha sido inicializado",$time);
     fork
-      ambiente_inst.run();
+      ambiente_inst.run();//corre el ambiente
     join_none
     
+    //envia instrucciones al generador_agente
     instruccion=transacciones_aleatorizadas;
     t_g_mbx.put(instruccion);
     $display("[%0t]Test: Enviada la primera instruccion al generador transacciones aleatorias",$time);
@@ -37,9 +38,11 @@ class test#(parameter pck_sz=41,drvs=16);
     t_g_mbx.put(instruccion);
     $display("[%0t]Test: Enviada la segunda instruccion al generador un solo dispositivo",$time);
     
+ 
     
     #10000;
-    $display("[T=%t] Test: Se alcanza el tiempo limite de la prueba",$time);
+    $display("[%g] Test: Se alcanza el tiempo limite de la prueba",$time);
+    //envia instrucciones al scoreboard
     inst_sr=retardo_promedio;
     t_s_mbx.put(inst_sr);
     inst_sr=reporte;
@@ -47,6 +50,6 @@ class test#(parameter pck_sz=41,drvs=16);
     inst_sr=archivo;
     t_s_mbx.put(inst_sr);
     
-    $finish;
+    //$finish;
   endtask 
 endclass
