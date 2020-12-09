@@ -1,12 +1,13 @@
 class score_board #(parameter pck_sz=41, drvs=16);
-  agent_score_mbx  a_s_mbx; // mailbox para comunicarse con el agente
-  score_check_mbx s_c_mbx; // mailbox para env8r transacciones al checker
+  gen_agent_score_mbx  g_a_s_mbx; // mailbox para comunicarse con el agente
+  score_check_mbx s_c_mbx; // mailbox para enviar transacciones al checker
   check_score_mbx c_s_mbx; //mailbox para recibir los resultados del checker
   test_score_mbx t_s_mbx; //mailbox para recibir instrucciones del test
-  transaccion transaccion_entrante; 
-  transaccion transaccion_resultante; 
+  transaccion #(.pck_sz(pck_sz), .drvs(drvs)) transaccion_entrante; 
+  transaccion #(.pck_sz(pck_sz), .drvs(drvs)) transaccion_resultante; 
   transaccion scoreboard[$]; // esta es la estructura dinámica que maneja el scoreboard 
- transaccion scoreboard_reportes[$]; // esta es la estructura dinámica utilizada para generar reportes
+  transaccion scoreboard_reportes[$]; // esta es la estructura dinámica utilizada para generar reportes
+  transaccion to_checker;
   transaccion auxiliar_array[$]; // estructura auxiliar usada para explorar el scoreboard;  
   transaccion auxiliar_trans_in;
   transaccion auxiliar_trans_out;
@@ -23,38 +24,42 @@ class score_board #(parameter pck_sz=41, drvs=16);
   event test_done;
 
 
-  task run;
-	
+  
+  task run();
+    
     $display("[%g] El Score Board fue inicializado",$time);
     forever begin
-      #5
-      if(a_s_mbx.num()>0)begin
-        a_s_mbx.get(transaccion_entrante);
+      #1;
+      if(g_a_s_mbx.num()>0)begin
+        g_a_s_mbx.get(transaccion_entrante);
         transaccion_entrante.print("Score Board: transacción recibida desde el Agente");
-	scoreboard.push_back(transaccion_entrante);
-        s_c_mbx.put(transaccion_entrante);
-	transacciones_enviadas++;
-      #1 -> agent_done; 
+	    scoreboard.push_back(transaccion_entrante);
+        to_checker=scoreboard.pop_front();    
+        s_c_mbx.put(to_checker);
+        transacciones_enviadas++;
+        #1 -> agent_done; 
       end else begin
         if(c_s_mbx.num()>0)begin
-	  c_s_mbx.get(transaccion_resultante);
-          transaccion_resultante.print("Score Board: resultados recibidos desde el checker");
-          if(transaccion_resultante.completado) begin
+        c_s_mbx.get(transaccion_resultante);
+        transaccion_resultante.print("Score Board: resultados recibidos desde el checker");
+        if(transaccion_resultante.completado) begin
             retardo_total = retardo_total + transaccion_resultante.retardo;
             transacciones_completadas++;
-	  end
-	  		scoreboard_reportes.push_back(transaccion_resultante);
-          #1 -> chkr_done;
+         
+	     end
+	     scoreboard_reportes.push_back(transaccion_resultante);
+         #1-> chkr_done;
         end else begin
-	    if(t_s_mbx.num()>0)begin
+        if(t_s_mbx.num()>0)begin
               t_s_mbx.get(orden);
               case(orden)
                 retardo_promedio: begin
                   $display("Score Board: Recibida Orden Retardo_Promedio");
                   retardo_promedio = retardo_total/transacciones_completadas;
                   $display("[%g] Score board: el retardo promedio es: %0.3f", $time, retardo_promedio);
+                  $display("[%g] Score board: el retardo promedio es: %0.3f", $time, retardo_promedio);$display("[%g] Score board: el retardo total es: %0.3f", $time, retardo_total);
                 end
-                reporte: begin
+		        reporte: begin
                   $display("Score Board: Recibida Orden Reporte");
                   tamano_sb = this.scoreboard_reportes.size();
                   for(int i=0;i<tamano_sb;i++) begin
@@ -64,7 +69,7 @@ class score_board #(parameter pck_sz=41, drvs=16);
                   end
                   scoreboard_reportes = auxiliar_array;
                 end
-	        archivo: begin
+                archivo: begin
                   $display("Score Board: Recibida Orden Archivo");
 		  		  tamano_sb = this.scoreboard_reportes.size();
 		 		  f = $fopen("output.csv","w");
@@ -86,10 +91,9 @@ class score_board #(parameter pck_sz=41, drvs=16);
             	  end
               endcase
           @(test_done);
-           end
-         end
+            end
+        end
+      end         
       end
-      end
-    endtask
-  
+    endtask 
 endclass
