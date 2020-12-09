@@ -1,4 +1,8 @@
+// Code your testbench here
+// or browse Examples
 `timescale 1ns/1ps
+//incluye todos los elementos de ambiente
+`include "interfaz.sv"
 `include "transacciones.sv"
 `include "generator.sv"
 `include "scoreboard.sv"
@@ -21,20 +25,20 @@ module test_bench;
   parameter drvs=16;
   parameter broadcast={8{1'b1}};
   
-  test #(.pck_sz(pck_sz),.drvs(drvs)) t0;
+  test #(.pck_sz(pck_sz),.drvs(drvs)) t0;//instancia el test
   
   
-  mesh_gnrt #(.ROW(row),.COLUMS(columns),.pckg_sz(pck_sz),.fifo_depth(fifo_depth),.broadcast(broadcast)) vdc(.clk(clk));
+  mesh_gnrt #(.ROW(row),.COLUMS(columns),.pckg_sz(pck_sz),.fifo_depth(fifo_depth),.broadcast(broadcast)) vdc(.clk(clk));//inicializa la interfaz
   
-  always #5 clk=~clk;
+  always #1 clk=~clk;//configura el reloj
   
-  mesh_gnrtr  #(.ROW(row),.COLUMS(columns),.pckg_sz(pck_sz),.fifo_depth(fifo_depth),.broadcast(broadcast)) uut (.pndng(vdc.pndng),.data_out(vdc.data_out),.popin(vdc.pop_in),.pop(vdc.pop),.data_out_i_in(vdc.data_out_i_in),.pndng_i_in(vdc.pndgn_i_in),.clk(vdc.clk),.reset(vdc.reset));
+  mesh_gnrtr  #(.ROW(row),.COLUMS(columns),.pckg_sz(pck_sz),.fifo_depth(fifo_depth),.broadcast(broadcast)) uut (.pndng(vdc.pndng),.data_out(vdc.data_out),.popin(vdc.pop_in),.pop(vdc.pop),.data_out_i_in(vdc.data_out_i_in),.pndng_i_in(vdc.pndgn_i_in),.clk(vdc.clk),.reset(vdc.reset));//instancia el DUT
   
   initial begin
-    clk=0;
-    t0=new;
-    t0.vdc=vdc;
-    t0.ambiente_inst.d0.vdc=vdc;
+    clk=0;//inicia el reloj en cero
+    t0=new;//construye el test
+    t0.vdc=vdc;//conecta el test a la interfaz virtual
+    t0.ambiente_inst.d0.vdc=vdc;//conecta para los 16 drivers_monitor la interfaz virtual 
     t0.ambiente_inst.d1.vdc=vdc;
     t0.ambiente_inst.d2.vdc=vdc;
     t0.ambiente_inst.d3.vdc=vdc;
@@ -51,12 +55,12 @@ module test_bench;
     t0.ambiente_inst.d14.vdc=vdc;
     t0.ambiente_inst.d15.vdc=vdc;
     fork
-    t0.run();
+      t0.run();//corre el test como proceso hijo
     join
   end
   
-  always@(posedge clk)begin
-    if($time>300000)begin
+  always@(posedge clk)begin//si se sobrepasa el tiempo de prueba termine el test
+    if($time>3000000)begin
       $display("tiempo_limite de test");
       $finish;
     end
