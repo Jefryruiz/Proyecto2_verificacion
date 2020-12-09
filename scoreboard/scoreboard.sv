@@ -62,7 +62,7 @@ class score_board #(parameter pck_sz=41, drvs=16);
 		 		  f = $fopen("output.txt","w");
                   for(int i=0;i<tamano_sb;i++) begin
                     auxiliar_trans = scoreboard_reportes.pop_front;
-		   		    auxiliar_array.push_back(auxiliar_trans);
+		    auxiliar_array.push_back(auxiliar_trans);
                     $fwrite(f,"%p\n",auxiliar_array[i]);
                   end
                   scoreboard_reportes = auxiliar_array;
