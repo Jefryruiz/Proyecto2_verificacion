@@ -1,4 +1,4 @@
-class ambiente#(parameter pck_sz=41,drvs=16);
+class ambiente#(parameter pck_sz=41,drvs=16);// inicializa los elementos del ambiente, generador, drivers_monitores, scoreboard, checker
   generator #(.pck_sz(pck_sz),.drvs(drvs)) ga0;
   driver #(.pck_sz(pck_sz),.drvs(drvs)) d0;
   driver #(.pck_sz(pck_sz),.drvs(drvs)) d1;
@@ -19,28 +19,14 @@ class ambiente#(parameter pck_sz=41,drvs=16);
   score_board #(.pck_sz(pck_sz),.drvs(drvs)) s0;
   check #(.pck_sz(pck_sz),.drvs(drvs)) c0;
   
-  virtual mesh_gnrt vdc;
+  virtual mesh_gnrt vdc;// interfaz virtual que conecta al ambiente
   
-  event drv_done0;
-  event drv_done1;
-  event drv_done2;
-  event drv_done3;
-  event drv_done4;
-  event drv_done5;
-  event drv_done6;
-  event drv_done7;
-  event drv_done8;
-  event drv_done9;
-  event drv_done10;
-  event drv_done11;
-  event drv_done12;
-  event drv_done13;
-  event drv_done14;
-  event drv_done15;
   
+  event drv_done;// eventos que se comunican con el driver
+  // mailboxes que comunican el test con el generador_agente y el scoreboard
   test_gen_mbx t_g_mbx;
   test_score_mbx t_s_mbx;
- 
+  // maibox que conecta los drivers_monitor con el generador_agente y generador_agente con el score
   gen_agent_drv_mbx g_a_d_mbx;
   gen_agent_score_mbx g_a_s_mbx;
   
@@ -61,9 +47,10 @@ class ambiente#(parameter pck_sz=41,drvs=16);
   gen_agent_drv_mbx g_a_d_mbx15;
   gen_agent_drv_mbx g_a_d_mbx16;
   
+  //mailbox que comunica el scoreboard con el checker y checker con el score para pasar resultados
   check_score_mbx c_s_mbx;
   score_check_mbx s_c_mbx;
-  
+  //mailboxes que comunican el driver_monitor con el checker
   drv_chkr_mbx m_c_mbx1;
   drv_chkr_mbx m_c_mbx2;
   drv_chkr_mbx m_c_mbx3;
@@ -81,8 +68,10 @@ class ambiente#(parameter pck_sz=41,drvs=16);
   drv_chkr_mbx m_c_mbx15;
   drv_chkr_mbx m_c_mbx16;
   
+  drv_chkr_mbx d_c_mbx;
   
-  function new();
+  
+  function new();//construye los mailboxes y los elementos de ambiente y los conecta de acuerdo a los mensajes que se pasan, y conecta también lo eventos correspondientes
   t_g_mbx=new();
   t_s_mbx=new();  
    
@@ -108,6 +97,8 @@ class ambiente#(parameter pck_sz=41,drvs=16);
     
   c_s_mbx=new;
   s_c_mbx=new;
+    
+  d_c_mbx=new;
     
   m_c_mbx1=new;
   m_c_mbx2=new;
@@ -243,42 +234,27 @@ class ambiente#(parameter pck_sz=41,drvs=16);
     c0.m_c_mbx16=m_c_mbx16;
     d15.d_c_mbx=m_c_mbx16;
     
-    ga0.drv_done0=drv_done0;
-    ga0.drv_done1=drv_done1;
-    ga0.drv_done2=drv_done2;
-    ga0.drv_done3=drv_done3;
-    ga0.drv_done4=drv_done4;
-    ga0.drv_done5=drv_done5;
-    ga0.drv_done6=drv_done6;
-    ga0.drv_done7=drv_done7;
-    ga0.drv_done8=drv_done8;
-    ga0.drv_done9=drv_done9;
-    ga0.drv_done10=drv_done10;
-    ga0.drv_done11=drv_done11;
-    ga0.drv_done12=drv_done12;
-    ga0.drv_done13=drv_done13;
-    ga0.drv_done14=drv_done14;
-    ga0.drv_done15=drv_done15;
+    ga0.drv_done=drv_done;
     
-    d0.drv_done=drv_done0;
-    d1.drv_done=drv_done1;
-    d2.drv_done=drv_done2;
-    d3.drv_done=drv_done3;
-    d4.drv_done=drv_done4;
-    d5.drv_done=drv_done5;
-    d6.drv_done=drv_done6;
-    d7.drv_done=drv_done7;
-    d8.drv_done=drv_done8;
-    d9.drv_done=drv_done9;
-    d10.drv_done=drv_done10;
-    d11.drv_done=drv_done11;
-    d12.drv_done=drv_done12;
-    d13.drv_done=drv_done13;
-    d14.drv_done=drv_done14;
-    d15.drv_done=drv_done15;
+    d0.drv_done=drv_done;
+    d1.drv_done=drv_done;
+    d2.drv_done=drv_done;
+    d3.drv_done=drv_done;
+    d4.drv_done=drv_done;
+    d5.drv_done=drv_done;
+    d6.drv_done=drv_done;
+    d7.drv_done=drv_done;
+    d8.drv_done=drv_done;
+    d9.drv_done=drv_done;
+    d10.drv_done=drv_done;
+    d11.drv_done=drv_done;
+    d12.drv_done=drv_done;
+    d13.drv_done=drv_done;
+    d14.drv_done=drv_done;
+    d15.drv_done=drv_done;
   endfunction
   
-  virtual task run();
+  virtual task run();//corre como procesos hijos cada elemento del ambiente del test
     $display("[%0t]El ambiente fue inicializado",$time);
     fork
       ga0.run();
