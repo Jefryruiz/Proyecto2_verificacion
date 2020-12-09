@@ -20,6 +20,10 @@ class score_board #(parameter pck_sz=41, drvs=16);
   int retardo_total = 0;
   int f;
   int csvQ[$];
+  int maxBW = 0;
+  int minBW = 0;
+  int promBW = 0;
+  int BW[$];
   event test_done;
 
 
@@ -55,10 +59,19 @@ class score_board #(parameter pck_sz=41, drvs=16);
                   retardo_promedio = retardo_total/transacciones_completadas;
                   $display("[%g] Score board: el retardo promedio es: %0.3f", $time, retardo_promedio);
                   $display("[%g] Score board: el retardo promedio es: %0.3f", $time, retardo_promedio);$display("[%g] Score board: el retardo total es: %0.3f", $time, retardo_total);
+                  tamano_sbr = this.scoreboard_reportes.size();
+                  for(int i=0;i<tamano_sbr;i++) begin
+                     auxiliar_trans_out = scoreboard_reportes.pop_front;
+                    maxBW = auxiliar_trans_out.payload/auxiliar_trans_out.retardo_max;
+                    minBW = auxiliar_trans_out.payload/auxiliar_trans_out.retardo;
+                    promBW = auxiliar_trans_out.payload/retardo_promedio;
+                    $display("Calculando Ancho de Banda:  ","  Maximo =  ",maxBW,"  Minimo =  ",minBW,"  Promedio =  ",promBW);
+                  end
+                  scoreboard_reportes = auxiliar_array;
                 end
 		        reporte: begin
                   $display("Score Board: Recibida Orden Reporte");
-                  tamano_sb = this.scoreboard_reportes.size();
+                  tamano_sbr = this.scoreboard_reportes.size();
                   for(int i=0;i<tamano_sb;i++) begin
                     auxiliar_trans_out = scoreboard_reportes.pop_front;
                     auxiliar_trans_out.print("SB_Report:");
