@@ -35,7 +35,7 @@ class driver #(parameter pck_sz=41, drvs=16, id_drv=0);
                     wait_=wait_+1;
                   fifo.push_back(trans.dato);//Coloca el paquete dentro de la fifo
                  end
-                vdc.pop_in[i]<=1;//levanta bandera de pop_in para darle el paquete al dato entrada-salida
+                vdc.pop[i]<=1;//levanta bandera de pop_in para darle el paquete al dato entrada-salida
                 vdc.data_out_i_in[i]=fifo.pop_front();
               @(posedge vdc.clk);  
              ->drv_done;//envia el evento al generador_agente  
