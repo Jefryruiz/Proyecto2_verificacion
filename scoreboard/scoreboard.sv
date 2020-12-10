@@ -15,6 +15,7 @@ class score_board #(parameter pck_sz=41, drvs=16);
   solicitud_sb orden;
   int tamano_sb = 0;
   int tamano_sbr = 0;
+  int tamano_gnu = 0;
   int transacciones_enviadas=0;
   int transacciones_completadas =0;
   int retardo_total = 0;
@@ -24,6 +25,11 @@ class score_board #(parameter pck_sz=41, drvs=16);
   int minBW = 0;
   int promBW = 0;
   int BW[$];
+  int gnu1[$];
+  int gnu2[$];
+  int gnu3[$];
+  int g1;
+  int g2;
   event test_done;
 
 
@@ -68,6 +74,13 @@ class score_board #(parameter pck_sz=41, drvs=16);
                     $display("Calculando Ancho de Banda:  ","  Maximo =  ",maxBW,"  Minimo =  ",minBW,"  Promedio =  ",promBW);
                   end
                   scoreboard_reportes = auxiliar_array;
+                  g1 = $fopen("output.txt","w");
+                  g2 = $fopen("output.txt","w");
+		  		  tamano_gnu=this.gnu1.size();
+                  for(int i=0;i<tamano_gnu;i++) begin
+		            $fwrite(g1,"\n",gnu1[i],gnu2[i]);
+                    $fwrite(g2,"\n",gnu1[i],gnu3[i]);
+                  end
                 end
 		        reporte: begin
                   $display("Score Board: Recibida Orden Reporte");
