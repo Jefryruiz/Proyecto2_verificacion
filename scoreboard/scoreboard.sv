@@ -85,10 +85,12 @@ class score_board #(parameter pck_sz=41, drvs=16);
 				  tamano_sbr = this.scoreboard_reportes.size();
 		 		  f = $fopen("output.csv","w");
 				  $fwrite(f,"%p\n","-----Transacciones enviadas-----");
-				  $fwrite(f,"%p\n","Completada | Modo | Tiempo de Envio | Retardo");
+              $fwrite(f,"%p\n","Completada | Terminal de procedencia | Terminal de destino | Modo | Tiempo de Envio | Retardo");
                     for(int i=0;i<tamano_sb;i++) begin
 		      auxiliar_trans_in = scoreboard.pop_front;
 		      csvQ.push_back(auxiliar_trans_in.completado);
+              csvQ.push_back(auxiliar_trans_in.sender);
+              csvQ.push_back(auxiliar_trans_in.receptor);
 		      csvQ.push_back(auxiliar_trans_in.mode);
 		      csvQ.push_back(auxiliar_trans_in.tiempo_envio);
 		      csvQ.push_back(auxiliar_trans_in.retardo);
@@ -96,10 +98,12 @@ class score_board #(parameter pck_sz=41, drvs=16);
 		      csvQ.delete();
                     end
 	            $fwrite(f,"%p\n","-----Transacciones recibidas-----");
-                    $fwrite(f,"%p\n","Completada | Modo | Tiempo de Recibido | Retardo");
+                    $fwrite(f,"%p\n","Completada | Terminal de procedencia | Terminal de destino | Modo | Tiempo de Envio | Retardo");
 		    for(int i=0;i<tamano_sbr;i++) begin
 		      auxiliar_trans_out = scoreboard_reportes.pop_front;
 		      csvQ.push_back(auxiliar_trans_out.completado);
+              csvQ.push_back(auxiliar_trans_out.sender);
+              csvQ.push_back(auxiliar_trans_out.receptor);
 		      csvQ.push_back(auxiliar_trans_out.mode);
 		      csvQ.push_back(auxiliar_trans_out.tiempo_envio);
 		      csvQ.push_back(auxiliar_trans_out.retardo);
