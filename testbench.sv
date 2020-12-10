@@ -1,5 +1,3 @@
-// Code your testbench here
-// or browse Examples
 `timescale 1ns/1ps
 //incluye todos los elementos de ambiente
 `include "interfaz.sv"
@@ -7,6 +5,7 @@
 `include "generator.sv"
 `include "scoreboard.sv"
 `include "driver.sv"
+`include "monitor.sv"
 `include "checker.sv"
 `include "ambiente.sv"
 `include "test.sv"
@@ -54,6 +53,22 @@ module test_bench;
     t0.ambiente_inst.d13.vdc=vdc;
     t0.ambiente_inst.d14.vdc=vdc;
     t0.ambiente_inst.d15.vdc=vdc;
+    t0.ambiente_inst.m0._if=vdc;//conecta para los 16 drivers y monitores la interfaz virtual 
+    t0.ambiente_inst.m1._if=vdc;
+    t0.ambiente_inst.m2._if=vdc;
+    t0.ambiente_inst.m3._if=vdc;
+    t0.ambiente_inst.m4._if=vdc;
+    t0.ambiente_inst.m5._if=vdc;
+    t0.ambiente_inst.m6._if=vdc;
+    t0.ambiente_inst.m7._if=vdc;
+    t0.ambiente_inst.m8._if=vdc;
+    t0.ambiente_inst.m9._if=vdc;
+    t0.ambiente_inst.m10._if=vdc;
+    t0.ambiente_inst.m11._if=vdc;
+    t0.ambiente_inst.m12._if=vdc;
+    t0.ambiente_inst.m13._if=vdc;
+    t0.ambiente_inst.m14._if=vdc;
+    t0.ambiente_inst.m15._if=vdc;
     fork
       t0.run();//corre el test como proceso hijo
     join
