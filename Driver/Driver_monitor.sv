@@ -1,12 +1,11 @@
 class driver #(parameter pck_sz=41, drvs=16, id_drv=0);
     virtual  mesh_gnrt #(.pckg_sz(pck_sz))vdc; 
     gen_agent_drv_mbx g_a_d_mbx; 
-    //drv_chkr_mbx d_c_mbx;  **ya no necesita llevar al checker
     event drv_done;
     int wait_;
     int dvc; //id del driver
     bit [pck_sz-1:0] fifo[$];
-    //int id_drv;
+    int id_drv;
     bit rst;
     
     task run();
