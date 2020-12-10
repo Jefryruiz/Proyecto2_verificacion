@@ -42,7 +42,7 @@ class score_board #(parameter pck_sz=41, drvs=16);
       if(g_a_s_mbx.num()>0)begin
         g_a_s_mbx.get(transaccion_entrante);
         transaccion_entrante.print("Score Board: transacción recibida desde el Agente");
-	    scoreboard.push_back(transaccion_entrante);
+	scoreboard.push_back(transaccion_entrante);
         to_checker=scoreboard.pop_front();    
         s_c_mbx.put(to_checker);
         transacciones_enviadas++; 
@@ -53,7 +53,9 @@ class score_board #(parameter pck_sz=41, drvs=16);
         if(transaccion_resultante.completado) begin
             retardo_total = retardo_total + transaccion_resultante.retardo;
             transacciones_completadas++;
-         
+            gnu1.push_back(transacciones_completadas);
+		gnu2.push_back(retardo_total);
+		gnu3.push_back(retardo_total/transacciones_completadas);
 	     end
 	     scoreboard_reportes.push_back(transaccion_resultante);
         end else begin
@@ -74,18 +76,18 @@ class score_board #(parameter pck_sz=41, drvs=16);
                     $display("Calculando Ancho de Banda:  ","  Maximo =  ",maxBW,"  Minimo =  ",minBW,"  Promedio =  ",promBW);
                   end
                   scoreboard_reportes = auxiliar_array;
-                  g1 = $fopen("output.txt","w");
-                  g2 = $fopen("output.txt","w");
+                  g1 = $fopen("output1.txt","w");
+                  g2 = $fopen("output2.txt","w");
 		  		  tamano_gnu=this.gnu1.size();
                   for(int i=0;i<tamano_gnu;i++) begin
-		            $fwrite(g1,"\n",gnu1[i],gnu2[i]);
+		    $fwrite(g1,"\n",gnu1[i],gnu2[i]);
                     $fwrite(g2,"\n",gnu1[i],gnu3[i]);
                   end
                 end
 		        reporte: begin
                   $display("Score Board: Recibida Orden Reporte");
                   tamano_sbr = this.scoreboard_reportes.size();
-                  for(int i=0;i<tamano_sb;i++) begin
+                  for(int i=0;i<tamano_sbr;i++) begin
                     auxiliar_trans_out = scoreboard_reportes.pop_front;
                     auxiliar_trans_out.print("SB_Report:");
                     auxiliar_array.push_back(auxiliar_trans_out);
