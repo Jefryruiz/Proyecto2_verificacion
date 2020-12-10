@@ -32,8 +32,8 @@ class driver #(parameter pck_sz=41, drvs=16, id_drv=0);
                     wait_=wait_+1;
                     fifo.push_back(trans.dato);
                 end
-                vdc.pop_in[i]<=1;
-                vdc.data_out_i_in[i]=fifo.pop_front(trans.dato);
+                vdc.pop_in<=1;
+                vdc.data_out_i_in=fifo.pop_front();
                 @(posedge vdc.clk);  
                 ->drv_done;
             end
